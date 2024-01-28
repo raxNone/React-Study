@@ -1,3 +1,3 @@
-# vueStudy
+# ReactJS Study
 
-vue로 프론트 제작하는 프로젝트
+React JS 공부를 위한 git repository입니다.
