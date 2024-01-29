@@ -17,11 +17,7 @@ function App() {
       <div className="black-nav">
         <div style={{color:'green'}}>React 학습 App</div>
       </div>
-      <button onClick={()=>{
-        var texts=[...글제목];
-        texts.sort();
-        글제목변경(texts);
-      }}>버튼</button>
+      
       <div className="list">
         <h3>{글제목[0]} <span onClick={()=>{따봉변경(따봉+1)}}>G {따봉}</span> </h3>
         <p>{날짜[0]}</p>
@@ -36,8 +32,21 @@ function App() {
         <hr/>
       </div>
       
+      <Modal/>
+
     </div>
   );    
+}
+//필수 ! component는 첫글자 대문자
+//div쓰지 않고 묶고싶을 떄 <> </>
+function Modal(){
+  return (
+    <div className='modal'>
+      <h2>제목</h2>
+      <p>날짜</p>
+      <p>상세내용</p>
+    </div>
+  )
 }
 
 export default App;
