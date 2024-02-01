@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 
 function App() {
@@ -13,14 +13,19 @@ function App() {
   const [id, setId] = useState(null);
   const [nextId, setNextId] = useState(4);
   let content=null;
+  let contextControl = null;
 
   if (mode==='WELCOME'){
     content= <Article title='Welcome' body='Hello, WEB'/>
-  }else if (mode=='READ'){
+  }else if (mode==='READ'){
     topics.forEach(topic=>{
       if (topic.id === id){
     content= <Article title={topic.title} body={topic.body}/>}})
-  }else if (mode=='CREATE'){
+    contextControl = <li><a href={"/update/"+id} onClick={(event)=>{
+      event.preventDefault();
+      setMode('UPDATE');
+    }}>UPDATE {id}</a></li>
+  }else if (mode==='CREATE'){
     content= <Create onCreate={(_title,_body)=>{
       let cpTopics = [...topics];
       cpTopics.push({id:nextId, title:_title, body:_body})
@@ -29,6 +34,25 @@ function App() {
       setId(nextId);
       setNextId(nextId+1);
     }}/>
+  }else if (mode === 'UPDATE'){
+    topics.forEach(topic=>{
+      if (topic.id === id){
+        content = <Update title={topic.title} body={topic.body} 
+        onUpdate={(title,body)=>{
+          let newTopics = [...topics]
+          const updatedTopic = {id:id, title:title, body:body};
+          for (let i =0; i<newTopics.length; i++){
+            if (newTopics[i].id === id){
+              newTopics[i] = updatedTopic;
+              break;
+            }
+          }
+          setTopics(newTopics);
+          setMode('READ');
+        }}/>    
+      }
+    })
+    
   }
 
   return( 
@@ -37,8 +61,17 @@ function App() {
         <h2 onClick={()=>{setMode('WELCOME')}}>TOPIC</h2>
       </header>
       <List topics={topics} onChangeMode={id=>{console.log(id); setId(id); setMode('READ')}}/>
-      <a onClick={()=>{setMode('CREATE')}}>CREATE</a>
+      
       {content}
+
+      <ul>
+        <li><a href="/create/" onClick={(event)=>{
+          event.preventDefault();
+          setMode('CREATE');
+        }}>CREATE</a></li>
+        {contextControl}
+        
+      </ul>
 
     </div>
   );
@@ -52,6 +85,23 @@ function Article(props){
       <p>{props.body}</p>
     </div>
   )
+}
+
+function Update(props){
+  return (<article>
+      <h2>Update</h2>
+      <form onSubmit={event=>{
+        event.preventDefault();
+        const title = event.target.title.value;
+        const body = event.target.body.value;
+        props.onUpdate(title,body);
+      }}>
+        <p><input type="text" name='title' placeholder={props.title}/></p>
+        <p><textarea name='body' placeholder={props.body}/></p>
+        <p><input type='submit' value='Update'/></p>
+      </form>
+    </article>)
+
 }
 
 function Create(props){
@@ -87,9 +137,9 @@ function List(props){
 
   return (
     <div>
-      <ul>
+      <ol>
         {lis}
-      </ul>
+      </ol>
     </div>
   );
 }
