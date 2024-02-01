@@ -24,7 +24,7 @@ function App() {
     contextControl = <li><a href={"/update/"+id} onClick={(event)=>{
       event.preventDefault();
       setMode('UPDATE');
-    }}>UPDATE {id}</a></li>
+    }}>UPDATE id:{id}</a></li>
   }else if (mode==='CREATE'){
     content= <Create onCreate={(_title,_body)=>{
       let cpTopics = [...topics];
@@ -70,7 +70,18 @@ function App() {
           setMode('CREATE');
         }}>CREATE</a></li>
         {contextControl}
-        
+        <li><input type='button' value="DELETE" onClick={()=>{
+          const newTopics = [];
+          for (let i =0; i<topics.length; i++){
+            if (topics[i].id !== id){
+              newTopics.push(topics[i]);
+            }
+          }
+          setTopics(newTopics);
+          setMode('WELCOME');
+        }}></input></li>
+
+
       </ul>
 
     </div>
