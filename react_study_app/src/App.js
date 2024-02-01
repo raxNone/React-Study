@@ -4,13 +4,14 @@ import './App.css';
 
 function App() {
   
-  let [topics,topicChange] = useState([
+  let [topics,setTopics] = useState([
     {id:1, title:'html', body:'html is...'},
     {id:2, title:'css', body:'css is...'},
     {id:3, title:'js', body:'js is...'},
   ]) 
   const [mode,setMode] = useState('WELCOME');
   const [id, setId] = useState(null);
+  const [nextId, setNextId] = useState(4);
   let content=null;
 
   if (mode==='WELCOME'){
@@ -19,6 +20,15 @@ function App() {
     topics.forEach(topic=>{
       if (topic.id === id){
     content= <Article title={topic.title} body={topic.body}/>}})
+  }else if (mode=='CREATE'){
+    content= <Create onCreate={(_title,_body)=>{
+      let cpTopics = [...topics];
+      cpTopics.push({id:nextId, title:_title, body:_body})
+      setTopics(cpTopics);
+      setMode('READ');
+      setId(nextId);
+      setNextId(nextId+1);
+    }}/>
   }
 
   return( 
@@ -27,7 +37,7 @@ function App() {
         <h2 onClick={()=>{setMode('WELCOME')}}>TOPIC</h2>
       </header>
       <List topics={topics} onChangeMode={id=>{console.log(id); setId(id); setMode('READ')}}/>
-
+      <a onClick={()=>{setMode('CREATE')}}>CREATE</a>
       {content}
 
     </div>
@@ -38,9 +48,27 @@ function App() {
 function Article(props){
   return (
     <div>
-      <p>{props.title}</p>
+      <h2>{props.title}</h2>
       <p>{props.body}</p>
     </div>
+  )
+}
+
+function Create(props){
+  return (
+    <article>
+      <h2>Create</h2>
+      <form onSubmit={event=>{
+        event.preventDefault();
+        const title = event.target.title.value;
+        const body = event.target.body.value;
+        props.onCreate(title,body);
+      }}>
+        <p><input type="text" name='title' placeholder='title'/></p>
+        <p><textarea name='body' placeholder='body'/></p>
+        <p><input type='submit' value='Create'/></p>
+      </form>
+    </article>
   )
 }
 
