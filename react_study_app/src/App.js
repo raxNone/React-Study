@@ -15,7 +15,7 @@ function App() {
       <header>
         <h2>TOPICS</h2>
       </header>
-      <List topics={topics}/>
+      <List topics={topics} onChangeMode={(body,id)=>{alert(id+' : '+body)}}/>
     </div>
   );
   
@@ -26,7 +26,12 @@ function List(props){
   let lis=[];
 
   props.topics.forEach(topic => {
-    lis.push(<li key={topic.id}><a href={'/read/'+topic.id}>{topic.title}</a></li>)    
+    lis.push(<li key={topic.id}><a id={topic.id} href={'/read/'+topic.id}
+      onClick={function(event){
+        event.preventDefault();
+        props.onChangeMode(topic.body,event.target.id);//event.target은 이벤트를 호출한 객체자체
+      }}
+    >{topic.title}</a></li>)    
   });
 
   return (
